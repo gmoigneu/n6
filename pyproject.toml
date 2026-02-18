@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "n6"
+version = "0.1.0"
+description = "Number 6 — a personal AI-powered CLI assistant"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.11"
+dependencies = [
+    "typer>=0.12",
+    "rich>=13",
+    "anthropic>=0.40",
+    "openai>=1.0",
+]
+
+[project.scripts]
+n6 = "n6.main:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["n6"]
+artifacts = ["n6/social_tone.md"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
