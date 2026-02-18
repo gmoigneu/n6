@@ -8,6 +8,18 @@
 
 Number 6 is a personal AI-powered CLI assistant, named in honor of Caprica Six from *Battlestar Galactica*. It handles a mix of everyday tasks: some are pure code utilities, others call an LLM under the hood.
 
+## Commands
+
+| Command | Input | Output |
+|---|---|---|
+| `n6 ask` | prompt argument | LLM response (Claude or GLM) |
+| `n6 summarize` | piped content | ~200-word summary |
+| `n6 yt-transcript` | YouTube URL or video ID | reformatted transcript |
+| `n6 blog` | `.md`/`.txt` files in cwd | `article.md` |
+| `n6 linkedin-article` | piped article | LinkedIn post |
+| `n6 linkedin-post` | prompt argument + optional piped content | LinkedIn post |
+| `n6 ln2bsky` | piped LinkedIn post | Bluesky thread |
+
 ## Install
 
 ```bash
