@@ -2,58 +2,75 @@
 
 > *"I'm not a number, I'm a free man!"* — but she is.
 
-Number 6 is a personal AI-powered CLI assistant, named in honor of Caprica Six from *Battlestar Galactica*. It handles a mix of everyday tasks: some are pure code utilities, others leverage an LLM under the hood.
+<p align="center">
+  <img src="n6.webp" alt="Number 6" width="256" />
+</p>
+
+Number 6 is a personal AI-powered CLI assistant, named in honor of Caprica Six from *Battlestar Galactica*. It handles a mix of everyday tasks: some are pure code utilities, others call an LLM under the hood.
 
 ## Install
 
 ```bash
-uv sync
-```
-
-Or install globally with [uv tool](https://docs.astral.sh/uv/concepts/tools/):
-
-```bash
-uv tool install .
+uv tool install --editable .
 ```
 
 ## Configuration
 
-Set your API keys via env vars or `~/.n6.toml`:
+Create `~/.n6.toml` with your Z.AI API key (required for the GLM backend):
 
 ```toml
-# ~/.n6.toml
-anthropic_api_key = "sk-ant-..."
 zai_api_key = "..."
 ```
 
-| Variable | Purpose |
-|---|---|
-| `ANTHROPIC_API_KEY` | Claude (Anthropic) backend |
-| `ZAI_API_KEY` | GLM-5 (Z.AI) backend |
+The Claude backend uses your existing Claude Code subscription — no API key needed.
 
-## Usage
+## Commands
+
+### `n6 ask`
+
+One-shot prompt to Claude or GLM.
 
 ```bash
-n6 --help
-
-# Ask Claude (default)
-n6 ask "Summarize the latest news on fusion energy"
-
-# Ask GLM-5 via Z.AI
+n6 ask "What is the capital of France?"
 n6 ask "Translate this to French: hello world" --backend glm
-
-# Pipe input
-echo "explain this code" | n6 ask -
 ```
 
-## LLM Backends
-
-| Backend | Flag | Model |
+| Option | Default | Description |
 |---|---|---|
-| Claude (Anthropic) | `--backend claude` | `claude-sonnet-4-6` |
-| GLM-5 (Z.AI) | `--backend glm` | `glm-5` |
+| `--backend` | `claude` | `claude` or `glm` |
+| `--model` | — | Override the model name |
+| `--system` | — | System prompt |
+| `--no-stream` | off | Disable streaming |
 
-Override the model with `--model <name>`.
+### `n6 summarize`
+
+Pipe any content in, get a ~200-word summary out. Uses the GLM backend.
+
+```bash
+cat article.txt | n6 summarize
+curl -s https://example.com | n6 summarize
+```
+
+### `n6 linkedin-article`
+
+Pipe an article in, get a LinkedIn post out. Uses Claude Sonnet. Output is plain text sized for peak LinkedIn engagement (1,300–1,600 characters).
+
+```bash
+cat article.md | n6 linkedin-article
+curl -s https://example.com/post | n6 linkedin-article
+```
+
+### `n6 yt-transcript`
+
+Fetch a YouTube video transcript and reformat it into readable prose using Claude. Status messages go to stderr so the output can be piped cleanly.
+
+```bash
+n6 yt-transcript https://www.youtube.com/watch?v=dQw4w9WgXcQ
+n6 yt-transcript dQw4w9WgXcQ --lang fr
+n6 yt-transcript dQw4w9WgXcQ > transcript.txt
+n6 yt-transcript dQw4w9WgXcQ | n6 summarize
+n6 yt-transcript dQw4w9WgXcQ --raw   # skip reformatting
+```
 
 ## License
 

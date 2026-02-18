@@ -25,10 +25,6 @@ uv tool install --editable .
 # Run the CLI
 uv run n6 --help
 
-# Run a specific command
-uv run n6 ask "what is the capital of France?"
-uv run n6 ask "translate this" --backend glm
-
 # Add a dependency
 uv add <package>
 
@@ -41,16 +37,17 @@ uv run ruff format n6/
 
 ```
 n6/
-  main.py               # Typer app; registers all commands
-  config.py             # Config via env vars + ~/.n6.toml (TOML)
-  social_tone.md        # Shared tone/style rules for social media commands
+  main.py                 # Typer app; registers all commands
+  config.py               # Config via env vars + ~/.n6.toml (TOML)
+  social_tone.md          # Shared tone/style rules for social media commands
   llm/
-    claude.py           # Shells out to the `claude` CLI: ask() and stream()
-    glm.py              # Anthropic SDK → Z.AI endpoint: ask() and stream()
+    claude.py             # Shells out to the `claude` CLI: ask() and stream()
+    glm.py                # Anthropic SDK → Z.AI endpoint: ask() and stream()
   commands/
-    ask.py              # n6 ask — one-shot prompt, selects backend via --backend
-    summarize.py        # n6 summarize — pipe content in, GLM returns ~200-word summary
-    linkedin_article.py # n6 linkedin-article — pipe article in, Claude Sonnet writes LinkedIn post
+    ask.py                # n6 ask — one-shot prompt, selects backend via --backend
+    summarize.py          # n6 summarize — pipe content in, GLM returns ~200-word summary
+    linkedin_article.py   # n6 linkedin-article — pipe article in, Claude Sonnet writes LinkedIn post
+    yt_transcript.py      # n6 yt-transcript — fetch YouTube transcript, reformat with Claude
 ```
 
 **Adding a new command:** create `n6/commands/<name>.py` with a function, then register it in `main.py` with `app.command()(<function>)`. Typer converts underscores to hyphens in command names automatically.
@@ -67,7 +64,7 @@ Shells out to the `claude` CLI. No API key needed — uses the Claude Code subsc
 > **Dev note:** The `claude` CLI cannot be run inside an active Claude Code session (`CLAUDECODE` env var blocks it). Use `env -u CLAUDECODE uv run n6 <command>` to test locally, or test from a regular terminal.
 
 ### GLM via Z.AI (`n6/llm/glm.py`)
-Uses the `anthropic` SDK pointed at Z.AI's Anthropic-compatible endpoint. Requires the **Z.AI coding plan** (not a pay-per-token account). The coding plan uses a different base URL than Z.AI's standard OpenAI-compatible API.
+Uses the `anthropic` SDK pointed at Z.AI's Anthropic-compatible endpoint (`https://api.z.ai/api/anthropic`). Requires the **Z.AI coding plan** — not a standard pay-per-token account. The coding plan endpoint is different from Z.AI's OpenAI-compatible API.
 
 ## Configuration
 
@@ -83,4 +80,14 @@ Keys are read from env vars first, then `~/.n6.toml`:
 Example `~/.n6.toml`:
 ```toml
 zai_api_key = "..."
+```
+
+## Output and piping
+
+Commands that produce content write to **stdout**; status/progress messages write to **stderr**. This keeps output clean for piping:
+
+```bash
+n6 yt-transcript <id> > transcript.txt        # status visible, content to file
+n6 yt-transcript <id> | n6 summarize          # chain commands
+n6 yt-transcript <id> 2>/dev/null             # suppress status messages
 ```
