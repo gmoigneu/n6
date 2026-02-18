@@ -62,7 +62,7 @@ curl -s https://example.com/post | n6 linkedin-article
 
 ### `n6 linkedin-post`
 
-Write a LinkedIn post from a prompt, opinion, or idea. Uses Claude Sonnet with the same voice and rules as `linkedin-article` — plain text, 1,300–1,600 characters, no emojis or hashtags.
+Write a LinkedIn post from a prompt, opinion, or idea. Uses Claude Sonnet with the same voice and rules as `linkedin-article` — plain text, 1,300–1,600 characters, with relevant hashtags appended.
 
 The prompt is the core idea. Pipe in supporting material (a README, a transcript, a snippet) and it gets folded in.
 

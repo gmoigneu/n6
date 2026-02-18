@@ -39,22 +39,32 @@ uv run ruff format n6/
 n6/
   main.py                 # Typer app; registers all commands
   config.py               # Config via env vars + ~/.n6.toml (TOML)
-  social_tone.md          # Shared tone/style rules for social media commands
   llm/
     claude.py             # Shells out to the `claude` CLI: ask() and stream()
     glm.py                # Anthropic SDK → Z.AI endpoint: ask() and stream()
   commands/
     ask.py                # n6 ask — one-shot prompt, selects backend via --backend
     summarize.py          # n6 summarize — pipe content in, GLM returns ~200-word summary
-    linkedin_article.py   # n6 linkedin-article — pipe article in, Claude Sonnet writes LinkedIn post
     yt_transcript.py      # n6 yt-transcript — fetch YouTube transcript, reformat with Claude
+    blog.py               # n6 blog — scan cwd for .md/.txt files, write article.md
+    linkedin_article.py   # n6 linkedin-article — pipe article in, Claude writes LinkedIn post
+    linkedin_post.py      # n6 linkedin-post — prompt + optional piped content → LinkedIn post
+    ln2bsky.py            # n6 ln2bsky — pipe LinkedIn post in, get Bluesky thread out
+
+.claude/skills/
+  blog-write/
+    SKILL.md              # Voice + style rules for blog/article writing
+    references/
+      style-guide.md      # Detailed style patterns (inlined at runtime by blog.py)
+  linkedin-write/
+    SKILL.md              # Voice + LinkedIn formatting rules (loaded as system prompt)
 ```
 
 **Adding a new command:** create `n6/commands/<name>.py` with a function, then register it in `main.py` with `app.command()(<function>)`. Typer converts underscores to hyphens in command names automatically.
 
 **Adding a new LLM backend:** add a module to `n6/llm/` exposing `ask()` and `stream()`, then wire it into whichever command needs it.
 
-**Social media commands** should load `n6/social_tone.md` at runtime and inject it into the system prompt. See `linkedin_article.py` for the pattern.
+**Skills as system prompts:** commands that need rich writing instructions load their system prompt from `.claude/skills/<name>/SKILL.md` at runtime. This keeps prompts editable without touching Python code, and makes the same rules available to Claude Code when the skill is invoked interactively. See `linkedin_article.py` for the pattern.
 
 ## LLM Backends
 
