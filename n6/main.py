@@ -8,6 +8,7 @@ from n6.commands.linkedin_post import linkedin_post
 from n6.commands.ln2bsky import ln2bsky
 from n6.commands.blog import blog
 from n6.commands.yt_transcript import yt_transcript
+from n6.commands.tidy import tidy
 
 app = typer.Typer(
     name="n6",
@@ -22,6 +23,7 @@ app.command()(linkedin_post)
 app.command()(ln2bsky)
 app.command()(blog)
 app.command()(yt_transcript)
+app.command()(tidy)
 
 if __name__ == "__main__":
     app()

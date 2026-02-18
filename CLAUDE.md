@@ -50,6 +50,7 @@ n6/
     linkedin_article.py   # n6 linkedin-article — pipe article in, Claude writes LinkedIn post
     linkedin_post.py      # n6 linkedin-post — prompt + optional piped content → LinkedIn post
     ln2bsky.py            # n6 ln2bsky — pipe LinkedIn post in, get Bluesky thread out
+    tidy.py               # n6 tidy — organize loose files in cwd into subfolders via Claude
 
 .claude/skills/
   blog-write/

@@ -19,6 +19,7 @@ Number 6 is a personal AI-powered CLI assistant, named in honor of Caprica Six f
 | `n6 linkedin-article` | piped article | LinkedIn post |
 | `n6 linkedin-post` | prompt argument + optional piped content | LinkedIn post |
 | `n6 ln2bsky` | piped LinkedIn post | Bluesky thread |
+| `n6 tidy` | loose files in cwd | files moved into subfolders |
 
 ## Install
 
@@ -103,6 +104,21 @@ Convert a LinkedIn post into a Bluesky thread. Each post is capped at 300 charac
 cat linkedin-post.txt | n6 ln2bsky
 n6 linkedin-post "My take on X" | n6 ln2bsky
 ```
+
+### `n6 tidy`
+
+Organize loose files in the current directory into subfolders. Uses Claude Opus to categorize files by type and purpose. Nothing is ever deleted — questionable files go to a "To delete" folder. Dotfiles are skipped entirely.
+
+```bash
+n6 tidy              # interactive — shows plan, asks before moving
+n6 tidy --dry-run    # preview only
+n6 tidy --yes        # skip confirmation
+```
+
+| Option | Default | Description |
+|---|---|---|
+| `--dry-run` | off | Show plan without executing |
+| `--yes` | off | Skip confirmation prompt |
 
 ### `n6 yt-transcript`
 
