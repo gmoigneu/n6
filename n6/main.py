@@ -4,6 +4,9 @@ import typer
 from n6.commands.ask import ask
 from n6.commands.summarize import summarize
 from n6.commands.linkedin_article import linkedin_article
+from n6.commands.linkedin_post import linkedin_post
+from n6.commands.ln2bsky import ln2bsky
+from n6.commands.blog import blog
 from n6.commands.yt_transcript import yt_transcript
 
 app = typer.Typer(
@@ -15,6 +18,9 @@ app = typer.Typer(
 app.command()(ask)
 app.command()(summarize)
 app.command()(linkedin_article)
+app.command()(linkedin_post)
+app.command()(ln2bsky)
+app.command()(blog)
 app.command()(yt_transcript)
 
 if __name__ == "__main__":

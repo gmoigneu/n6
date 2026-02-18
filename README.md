@@ -60,6 +60,38 @@ cat article.md | n6 linkedin-article
 curl -s https://example.com/post | n6 linkedin-article
 ```
 
+### `n6 linkedin-post`
+
+Write a LinkedIn post from a prompt, opinion, or idea. Uses Claude Sonnet with the same voice and rules as `linkedin-article` — plain text, 1,300–1,600 characters, no emojis or hashtags.
+
+The prompt is the core idea. Pipe in supporting material (a README, a transcript, a snippet) and it gets folded in.
+
+```bash
+n6 linkedin-post "My take on why most teams shouldn't adopt microservices"
+cat README.md | n6 linkedin-post "Highlight this open source project"
+n6 yt-transcript <video-id> | n6 linkedin-post "Key insight from this talk worth sharing"
+```
+
+### `n6 blog`
+
+Recursively scans the current directory for `.md` and `.txt` files, treats them as research material, and writes `article.md` using the blog-write skill. Works with any mix of notes, YouTube transcripts, research dumps, or drafts.
+
+```bash
+cd ~/research/my-topic/
+n6 blog
+```
+
+Files are listed to stderr as they're collected. The output is a single cohesive article — not a summary of each file — written to `article.md` in the working directory.
+
+### `n6 ln2bsky`
+
+Convert a LinkedIn post into a Bluesky thread. Each post is capped at 300 characters (Bluesky's actual limit), numbered `1/N`, `2/N`, etc. Splits at natural sentence boundaries and adapts the tone from LinkedIn-professional to Bluesky-direct.
+
+```bash
+cat linkedin-post.txt | n6 ln2bsky
+n6 linkedin-post "My take on X" | n6 ln2bsky
+```
+
 ### `n6 yt-transcript`
 
 Fetch a YouTube video transcript and reformat it into readable prose using Claude. Status messages go to stderr so the output can be piped cleanly.
