@@ -51,6 +51,7 @@ n6/
     linkedin_post.py      # n6 linkedin-post — prompt + optional piped content → LinkedIn post
     ln2bsky.py            # n6 ln2bsky — pipe LinkedIn post in, get Bluesky thread out
     tidy.py               # n6 tidy — organize loose files in cwd into subfolders via Claude
+    image.py              # n6 image — pipe prompt in, generate image via Gemini
 
 .claude/skills/
   blog-write/
@@ -87,6 +88,9 @@ Keys are read from env vars first, then `~/.n6.toml`:
 | `CLAUDE_DEFAULT_MODEL` | Override model passed to `claude --model` |
 | `ZAI_DEFAULT_MODEL` | Override GLM model (default: `glm-4.6`) |
 | `ZAI_BASE_URL` | Override Z.AI base URL (default: `https://api.z.ai/api/anthropic`) |
+| `GEMINI_API_KEY` | API key for Gemini (image command) |
+| `GEMINI_PROJECT` | GCP project for Vertex AI auth (falls back to `GOOGLE_CLOUD_PROJECT`) |
+| `GEMINI_LOCATION` | Vertex AI location (falls back to `GOOGLE_CLOUD_LOCATION`, default: `us-central1`) |
 
 Example `~/.n6.toml`:
 ```toml

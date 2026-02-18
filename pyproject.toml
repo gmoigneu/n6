@@ -15,6 +15,7 @@ dependencies = [
     "anthropic>=0.40",
     "openai>=1.0",
     "youtube-transcript-api>=1.2.4",
+    "google-genai>=1.0",
 ]
 
 [project.scripts]

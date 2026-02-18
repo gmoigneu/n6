@@ -23,6 +23,11 @@ class Config:
     zai_default_model: str = "glm-4.6"
     zai_base_url: str = "https://api.z.ai/api/anthropic"
 
+    # Gemini — API key or Vertex AI (gcloud ADC)
+    gemini_api_key: str = ""
+    gemini_project: str = ""
+    gemini_location: str = "us-central1"
+
 
 @lru_cache(maxsize=1)
 def get_config() -> Config:
@@ -43,5 +48,14 @@ def get_config() -> Config:
         zai_base_url=os.getenv(
             "ZAI_BASE_URL",
             file_cfg.get("zai_base_url", "https://api.z.ai/api/anthropic"),
+        ),
+        gemini_api_key=os.getenv("GEMINI_API_KEY", file_cfg.get("gemini_api_key", "")),
+        gemini_project=os.getenv(
+            "GEMINI_PROJECT",
+            os.getenv("GOOGLE_CLOUD_PROJECT", file_cfg.get("gemini_project", "")),
+        ),
+        gemini_location=os.getenv(
+            "GEMINI_LOCATION",
+            os.getenv("GOOGLE_CLOUD_LOCATION", file_cfg.get("gemini_location", "us-central1")),
         ),
     )

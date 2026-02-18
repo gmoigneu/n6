@@ -20,6 +20,21 @@ Number 6 is a personal AI-powered CLI assistant, named in honor of Caprica Six f
 | `n6 linkedin-post` | prompt argument + optional piped content | LinkedIn post |
 | `n6 ln2bsky` | piped LinkedIn post | Bluesky thread |
 | `n6 tidy` | loose files in cwd | files moved into subfolders |
+| `n6 image` | piped prompt + filename arg | generated image file |
+
+## Requirements
+
+- **Python 3.11+**
+- **[uv](https://docs.astral.sh/uv/)** — fast Python package manager. Install with:
+  ```bash
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  ```
+- **[Claude Code](https://docs.anthropic.com/en/docs/claude-code)** — Anthropic's CLI for Claude (requires an active subscription). Install with:
+  ```bash
+  npm install -g @anthropic-ai/claude-code
+  ```
+
+The GLM backend additionally requires a [Z.AI](https://z.ai) coding plan and API key — see [Configuration](#configuration).
 
 ## Install
 
@@ -119,6 +134,21 @@ n6 tidy --yes        # skip confirmation
 |---|---|---|
 | `--dry-run` | off | Show plan without executing |
 | `--yes` | off | Skip confirmation prompt |
+
+### `n6 image`
+
+Generate an image from a piped prompt using Gemini. Uses `gemini-2.5-flash-image` by default; pass `--pro` for `gemini-3-pro-image-preview` (higher fidelity, advanced reasoning). Supports both Gemini API key and Vertex AI (gcloud ADC) authentication.
+
+```bash
+echo "A cat wearing a top hat" | n6 image cat.png
+echo "A mountain at sunset" | n6 image mountain.png --pro
+```
+
+| Option | Default | Description |
+|---|---|---|
+| `--pro` | off | Use Gemini 3 Pro for higher fidelity |
+
+Authentication: set `GEMINI_API_KEY` for API key auth, or `GEMINI_PROJECT` for Vertex AI with gcloud ADC.
 
 ### `n6 yt-transcript`
 

@@ -9,6 +9,7 @@ from n6.commands.ln2bsky import ln2bsky
 from n6.commands.blog import blog
 from n6.commands.yt_transcript import yt_transcript
 from n6.commands.tidy import tidy
+from n6.commands.image import image
 
 app = typer.Typer(
     name="n6",
@@ -24,6 +25,7 @@ app.command()(ln2bsky)
 app.command()(blog)
 app.command()(yt_transcript)
 app.command()(tidy)
+app.command()(image)
 
 if __name__ == "__main__":
     app()
