@@ -21,6 +21,12 @@ Number 6 is a personal AI-powered CLI assistant, named in honor of Caprica Six f
 | `n6 ln2bsky` | piped LinkedIn post | Bluesky thread |
 | `n6 tidy` | loose files in cwd | files moved into subfolders |
 | `n6 image` | piped prompt + filename arg | generated image file |
+| `n6 m fact` | text argument | stores a fact in memory |
+| `n6 m note` | text argument | stores a note in memory |
+| `n6 m article` | piped article | stores extracted facts + verbatim |
+| `n6 m meeting` | piped transcript | extracts and stores meeting memories |
+| `n6 m social` | text argument or piped post | stores a social media post |
+| `n6 s` | query argument | semantic search across stored memories |
 
 ## Requirements
 
@@ -35,6 +41,8 @@ Number 6 is a personal AI-powered CLI assistant, named in honor of Caprica Six f
   ```
 
 The GLM backend additionally requires a [Z.AI](https://z.ai) coding plan and API key — see [Configuration](#configuration).
+
+The memory system (`n6 m` / `n6 s`) requires an **OpenAI API key** and a running **Qdrant** instance. For a self-hosted setup on a VPS with Tailscale, see [docs/qdrant-vps-setup.md](docs/qdrant-vps-setup.md).
 
 ## Install
 
@@ -160,6 +168,39 @@ n6 yt-transcript dQw4w9WgXcQ --lang fr
 n6 yt-transcript dQw4w9WgXcQ > transcript.txt
 n6 yt-transcript dQw4w9WgXcQ | n6 summarize
 n6 yt-transcript dQw4w9WgXcQ --raw   # skip reformatting
+```
+
+### `n6 m` — Memory
+
+Store information in a persistent semantic memory backed by mem0 + Qdrant. Requires `OPENAI_API_KEY` and a running Qdrant instance. All commands accept `--context` (`-c`) to namespace memories (default: `global`).
+
+```bash
+n6 m fact "I prefer tabs over spaces"
+n6 m fact "We use Upsun for all new projects" --context upsun
+
+n6 m note "Look into Qdrant's sparse vector support"
+n6 m note "Upsun supports multi-app deployments natively" --context upsun
+
+cat article.md | n6 m article --title "Why we moved to Upsun" --context upsun
+# stores extracted facts (via LLM) AND the verbatim text
+
+cat meeting.txt | n6 m meeting --context upsun
+
+n6 m social "Just shipped X — here's why it matters…" --platform linkedin --context writing
+cat post.txt | n6 m social --platform bluesky
+```
+
+For Qdrant setup, see [docs/qdrant-vps-setup.md](docs/qdrant-vps-setup.md).
+
+### `n6 s` — Search
+
+Semantic search across stored memories, interpreted by an LLM into a markdown answer. Scoped to a context with `--context` (`-c`).
+
+```bash
+n6 s "Python preferences"
+n6 s "deployment model" --context upsun
+n6 s "what did we decide in the last sprint meeting" --context upsun
+n6 s "my recent linkedin posts" --context writing
 ```
 
 ## License

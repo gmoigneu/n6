@@ -10,6 +10,8 @@ from n6.commands.blog import blog
 from n6.commands.yt_transcript import yt_transcript
 from n6.commands.tidy import tidy
 from n6.commands.image import image
+from n6.commands import memory as memory_commands
+from n6.commands.search import search
 
 app = typer.Typer(
     name="n6",
@@ -26,6 +28,8 @@ app.command()(blog)
 app.command()(yt_transcript)
 app.command()(tidy)
 app.command()(image)
+app.add_typer(memory_commands.app, name="m")
+app.command(name="s")(search)
 
 if __name__ == "__main__":
     app()

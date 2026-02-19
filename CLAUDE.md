@@ -39,6 +39,7 @@ uv run ruff format n6/
 n6/
   main.py                 # Typer app; registers all commands
   config.py               # Config via env vars + ~/.n6.toml (TOML)
+  memory.py               # mem0 client factory (singleton); OpenAI LLM + embeddings + Qdrant
   llm/
     claude.py             # Shells out to the `claude` CLI: ask() and stream()
     glm.py                # Anthropic SDK → Z.AI endpoint: ask() and stream()
@@ -52,6 +53,8 @@ n6/
     ln2bsky.py            # n6 ln2bsky — pipe LinkedIn post in, get Bluesky thread out
     tidy.py               # n6 tidy — organize loose files in cwd into subfolders via Claude
     image.py              # n6 image — pipe prompt in, generate image via Gemini
+    memory.py             # n6 m — store memories: fact, note, article, meeting, social (--context)
+    search.py             # n6 s — semantic search with LLM-synthesised markdown output (--context)
 
 .claude/skills/
   blog-write/
@@ -91,6 +94,10 @@ Keys are read from env vars first, then `~/.n6.toml`:
 | `GEMINI_API_KEY` | API key for Gemini (image command) |
 | `GEMINI_PROJECT` | GCP project for Vertex AI auth (falls back to `GOOGLE_CLOUD_PROJECT`) |
 | `GEMINI_LOCATION` | Vertex AI location (falls back to `GOOGLE_CLOUD_LOCATION`, default: `us-central1`) |
+| `OPENAI_API_KEY` | Required for mem0 LLM (`gpt-4o-mini`) and embeddings (`text-embedding-3-small`) |
+| `QDRANT_HOST` | Qdrant host for memory storage (default: `localhost`) |
+| `QDRANT_PORT` | Qdrant port (default: `6333`) |
+| `MEM0_USER_ID` | mem0 user ID for memory isolation (default: `default`) |
 
 Example `~/.n6.toml`:
 ```toml

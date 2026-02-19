@@ -28,6 +28,16 @@ class Config:
     gemini_project: str = ""
     gemini_location: str = "us-central1"
 
+    # Qdrant (local Docker)
+    qdrant_host: str = "localhost"
+    qdrant_port: int = 6333
+
+    # OpenAI — used by mem0 (LLM + embeddings)
+    openai_api_key: str = ""
+
+    # mem0
+    mem0_user_id: str = "default"
+
 
 @lru_cache(maxsize=1)
 def get_config() -> Config:
@@ -58,4 +68,8 @@ def get_config() -> Config:
             "GEMINI_LOCATION",
             os.getenv("GOOGLE_CLOUD_LOCATION", file_cfg.get("gemini_location", "us-central1")),
         ),
+        qdrant_host=os.getenv("QDRANT_HOST", file_cfg.get("qdrant_host", "localhost")),
+        qdrant_port=int(os.getenv("QDRANT_PORT", str(file_cfg.get("qdrant_port", 6333)))),
+        openai_api_key=os.getenv("OPENAI_API_KEY", file_cfg.get("openai_api_key", "")),
+        mem0_user_id=os.getenv("MEM0_USER_ID", file_cfg.get("mem0_user_id", "default")),
     )

@@ -16,6 +16,8 @@ dependencies = [
     "openai>=1.0",
     "youtube-transcript-api>=1.2.4",
     "google-genai>=1.0",
+    "mem0ai>=1.0.4",
+    "qdrant-client>=1.17.0",
 ]
 
 [project.scripts]
@@ -28,3 +30,8 @@ artifacts = ["n6/social_tone.md"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.1",
+]
