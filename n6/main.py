@@ -12,6 +12,7 @@ from n6.commands.tidy import tidy
 from n6.commands.image import image
 from n6.commands import memory as memory_commands
 from n6.commands.search import search
+from n6.commands.serve import serve
 
 app = typer.Typer(
     name="n6",
@@ -30,6 +31,7 @@ app.command()(tidy)
 app.command()(image)
 app.add_typer(memory_commands.app, name="m")
 app.command(name="s")(search)
+app.command()(serve)
 
 if __name__ == "__main__":
     app()

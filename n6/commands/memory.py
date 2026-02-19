@@ -8,6 +8,7 @@ from rich.console import Console
 
 from n6.config import get_config
 from n6.memory import get_memory_client
+from n6.serve_utils import fetch_url
 
 app = typer.Typer(name="m", help="Store a memory (fact, note, article, meeting, social).")
 err = Console(stderr=True)
@@ -38,35 +39,59 @@ def fact(
 
 @app.command()
 def note(
-    text: str = typer.Argument(..., help="Free-form note to remember."),
+    text: Optional[str] = typer.Argument(None, help="Free-form note to remember."),
+    url: Optional[str] = typer.Option(None, "--url", "-u", help="Fetch content from this URL instead of providing text."),
     context: str = _CONTEXT_OPTION,
 ):
-    """Store a free-form note."""
+    """Store a free-form note (text argument or --url)."""
+    if url:
+        err.print(f"[dim]Fetching {url}…[/dim]")
+        try:
+            content = fetch_url(url)
+        except Exception as e:
+            err.print(f"[red]Error:[/red] {e}")
+            raise typer.Exit(1)
+        metadata: dict = {"type": "note", "context": context, "source": url}
+    elif text:
+        content = text
+        metadata = {"type": "note", "context": context}
+    else:
+        err.print("[red]Error:[/red] Provide a note as argument or use --url.")
+        raise typer.Exit(1)
+
     cfg = get_config()
     client = get_memory_client()
     client.add(
-        [{"role": "user", "content": text}],
+        [{"role": "user", "content": content}],
         user_id=cfg.mem0_user_id,
-        metadata={"type": "note", "context": context},
+        metadata=metadata,
     )
     err.print(f"[green]✓[/green] Note stored. [dim](context: {context})[/dim]")
 
 
 @app.command()
 def article(
+    url: Optional[str] = typer.Option(None, "--url", "-u", help="Fetch article from this URL instead of stdin."),
     title: Optional[str] = typer.Option(None, "--title", "-t", help="Article title."),
     context: str = _CONTEXT_OPTION,
 ):
-    """Store an article (read from stdin). Extracts key facts AND stores verbatim."""
-    if sys.stdin.isatty():
+    """Store an article. Pipe content via stdin or fetch with --url."""
+    if url:
+        err.print(f"[dim]Fetching {url}…[/dim]")
+        try:
+            text = fetch_url(url)
+        except Exception as e:
+            err.print(f"[red]Error:[/red] {e}")
+            raise typer.Exit(1)
+    elif not sys.stdin.isatty():
+        text = sys.stdin.read().strip()
+        if not text:
+            err.print("[red]Error:[/red] Empty input.")
+            raise typer.Exit(1)
+    else:
         err.print(
-            "[red]Error:[/red] No input detected. Pipe an article: cat article.md | n6 m article"
+            "[red]Error:[/red] No input. Pipe an article or use --url: n6 m article --url https://…"
         )
-        raise typer.Exit(1)
-
-    text = sys.stdin.read().strip()
-    if not text:
-        err.print("[red]Error:[/red] Empty input.")
         raise typer.Exit(1)
 
     cfg = get_config()
@@ -74,6 +99,8 @@ def article(
     base_metadata = {"type": "article", "context": context}
     if title:
         base_metadata["title"] = title
+    if url:
+        base_metadata["source"] = url
 
     # Pass 1: extract key facts and insights
     result = client.add(
@@ -82,7 +109,7 @@ def article(
         metadata={**base_metadata, "storage": "facts"},
         infer=True,
     )
-    facts_count = len(result.get("results", [])) if isinstance(result, dict) else 0
+    facts_count = len(result) if isinstance(result, list) else len(result.get("results", [])) if isinstance(result, dict) else 0
 
     # Pass 2: store verbatim
     client.add(
@@ -123,7 +150,7 @@ def meeting(
         metadata={"type": "meeting", "context": context},
     )
 
-    count = len(result.get("results", [])) if isinstance(result, dict) else 0
+    count = len(result) if isinstance(result, list) else len(result.get("results", [])) if isinstance(result, dict) else 0
     err.print(
         f"[green]✓[/green] Meeting stored ({count} memories extracted). "
         f"[dim](context: {context})[/dim]"

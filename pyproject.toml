@@ -18,6 +18,8 @@ dependencies = [
     "google-genai>=1.0",
     "mem0ai>=1.0.4",
     "qdrant-client>=1.17.0",
+    "gradio>=5",
+    "httpx>=0.28.1",
 ]
 
 [project.scripts]

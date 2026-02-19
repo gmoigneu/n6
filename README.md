@@ -21,6 +21,7 @@ Number 6 is a personal AI-powered CLI assistant, named in honor of Caprica Six f
 | `n6 ln2bsky` | piped LinkedIn post | Bluesky thread |
 | `n6 tidy` | loose files in cwd | files moved into subfolders |
 | `n6 image` | piped prompt + filename arg | generated image file |
+| `n6 serve` | — | local Gradio web UI (Add Memory + Chat) |
 | `n6 m fact` | text argument | stores a fact in memory |
 | `n6 m note` | text argument | stores a note in memory |
 | `n6 m article` | piped article | stores extracted facts + verbatim |
@@ -158,6 +159,23 @@ echo "A mountain at sunset" | n6 image mountain.png --pro
 
 Authentication: set `GEMINI_API_KEY` for API key auth, or `GEMINI_PROJECT` for Vertex AI with gcloud ADC.
 
+### `n6 serve`
+
+Launch a local Gradio web interface for the memory system. Opens automatically in the browser.
+
+Two tabs:
+- **Add Memory** — paste text, upload a `.txt`/`.md` file, or fetch content from a URL. Select context and type before storing.
+- **Chat** — conversational search across stored memories, backed by mem0 + OpenAI. Responses stream in real time.
+
+```bash
+n6 serve             # starts on http://127.0.0.1:7860
+n6 serve --port 8080
+```
+
+| Option | Default | Description |
+|---|---|---|
+| `--port` | `7860` | Port to bind the local server to |
+
 ### `n6 yt-transcript`
 
 Fetch a YouTube video transcript and reformat it into readable prose using Claude. Status messages go to stderr so the output can be piped cleanly.
@@ -182,6 +200,7 @@ n6 m note "Look into Qdrant's sparse vector support"
 n6 m note "Upsun supports multi-app deployments natively" --context upsun
 
 cat article.md | n6 m article --title "Why we moved to Upsun" --context upsun
+n6 m article --url https://example.com/post --context upsun
 # stores extracted facts (via LLM) AND the verbatim text
 
 cat meeting.txt | n6 m meeting --context upsun
