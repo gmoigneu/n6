@@ -16,6 +16,7 @@ from pathlib import Path
 import typer
 from rich.console import Console
 from n6.llm import claude
+from n6.llm.skills import load_humanizer
 
 console = Console(stderr=True)
 
@@ -50,8 +51,10 @@ def ln2bsky() -> None:
         console.print("[bold red]Error:[/bold red] Input is empty.")
         raise typer.Exit(1)
 
+    system = SYSTEM_PROMPT + "\n\n---\n\n" + load_humanizer()
+
     try:
-        for chunk in claude.stream(post, system=SYSTEM_PROMPT, model="claude-sonnet-4-6"):
+        for chunk in claude.stream(post, system=system, model="claude-sonnet-4-6"):
             print(chunk, end="", flush=True)
         print()
     except RuntimeError as e:

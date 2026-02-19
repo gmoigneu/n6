@@ -12,6 +12,7 @@ from typing import Annotated
 import typer
 from rich.console import Console
 from n6.llm import claude, glm
+from n6.llm.skills import load_humanizer
 
 console = Console()
 
@@ -26,6 +27,9 @@ def ask(
     no_stream: Annotated[bool, typer.Option("--no-stream", help="Disable streaming")] = False,
 ) -> None:
     """Send a prompt to Claude or GLM-5 and print the response."""
+    humanizer = load_humanizer()
+    system = (system + "\n\n---\n\n" + humanizer) if system else humanizer
+
     try:
         if no_stream:
             if backend == "glm":

@@ -19,6 +19,7 @@ from youtube_transcript_api._errors import (
     NoTranscriptFound,
 )
 from n6.llm import claude
+from n6.llm.skills import load_humanizer
 
 console = Console()
 err_console = Console(stderr=True)
@@ -93,9 +94,10 @@ def yt_transcript(
         return
 
     err_console.print("[dim]Reformatting with Claude...[/dim]")
+    system = SYSTEM_PROMPT + "\n\n---\n\n" + load_humanizer()
 
     try:
-        for chunk in claude.stream(raw_text, system=SYSTEM_PROMPT):
+        for chunk in claude.stream(raw_text, system=system):
             print(chunk, end="", flush=True)
         print()
     except RuntimeError as e:

@@ -17,6 +17,7 @@ from typing import Annotated
 import typer
 from rich.console import Console
 from n6.llm import claude
+from n6.llm.skills import load_humanizer
 
 console = Console()
 
@@ -26,7 +27,7 @@ SKILL_FILE = Path(__file__).parent.parent.parent / ".claude" / "skills" / "linke
 def _load_skill() -> str:
     if not SKILL_FILE.exists():
         raise FileNotFoundError(f"Skill file not found: {SKILL_FILE}")
-    return SKILL_FILE.read_text()
+    return SKILL_FILE.read_text() + "\n\n---\n\n" + load_humanizer()
 
 
 def linkedin_post(

@@ -13,6 +13,7 @@ import sys
 import typer
 from rich.console import Console
 from n6.llm import glm
+from n6.llm.skills import load_humanizer
 
 console = Console()
 
@@ -47,8 +48,10 @@ def summarize() -> None:
     if "<html" in content[:1000].lower() or "<!doctype" in content[:100].lower():
         content = _strip_html(content)
 
+    system = SYSTEM_PROMPT + "\n\n---\n\n" + load_humanizer()
+
     try:
-        for chunk in glm.stream(content, system=SYSTEM_PROMPT):
+        for chunk in glm.stream(content, system=system):
             console.print(chunk, end="")
         console.print()
     except RuntimeError as e:

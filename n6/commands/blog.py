@@ -15,6 +15,7 @@ from pathlib import Path
 import typer
 from rich.console import Console
 from n6.llm import claude
+from n6.llm.skills import load_humanizer
 
 console = Console(stderr=True)
 
@@ -33,6 +34,7 @@ def _load_system() -> str:
     system = SKILL_FILE.read_text()
     if STYLE_GUIDE_FILE.exists():
         system += "\n\n---\n\n" + STYLE_GUIDE_FILE.read_text()
+    system += "\n\n---\n\n" + load_humanizer()
     return system
 
 
