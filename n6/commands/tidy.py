@@ -176,7 +176,9 @@ def _execute_plan(plan: list[dict[str, str]]) -> None:
 
 
 def tidy(
-    dry_run: Annotated[bool, typer.Option("--dry-run", "-n", help="Show plan without executing")] = False,
+    dry_run: Annotated[
+        bool, typer.Option("--dry-run", "-n", help="Show plan without executing")
+    ] = False,
     yes: Annotated[bool, typer.Option("--yes", "-y", help="Skip confirmation prompt")] = False,
 ) -> None:
     """Organize loose files in the current directory into subfolders using Claude."""

@@ -98,8 +98,7 @@ def blog() -> None:
     user_message = (
         "Write a blog article based on the following research material. "
         "Synthesize it into a single cohesive article — not a summary of each file, "
-        "but one unified piece with a clear argument or narrative.\n\n"
-        + assembled
+        "but one unified piece with a clear argument or narrative.\n\n" + assembled
     )
 
     console.print("\nGenerating article...")

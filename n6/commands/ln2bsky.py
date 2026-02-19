@@ -42,7 +42,9 @@ Output format: each post as its own block, separated by a blank line. Nothing el
 def ln2bsky() -> None:
     """Convert a piped LinkedIn post into a Bluesky thread (300 chars per post)."""
     if sys.stdin.isatty():
-        console.print("[bold red]Error:[/bold red] No input detected. Pipe your LinkedIn post into this command.")
+        console.print(
+            "[bold red]Error:[/bold red] No input detected. Pipe your LinkedIn post into this command."
+        )
         console.print("  Example: [dim]cat post.txt | n6 ln2bsky[/dim]")
         raise typer.Exit(1)
 

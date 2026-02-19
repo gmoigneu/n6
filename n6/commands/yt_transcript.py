@@ -58,8 +58,12 @@ def _extract_video_id(url: str) -> str:
 
 def yt_transcript(
     url: Annotated[str, typer.Argument(help="YouTube video URL or video ID")],
-    lang: Annotated[str, typer.Option("--lang", "-l", help="Preferred language code (default: en)")] = "en",
-    raw: Annotated[bool, typer.Option("--raw", help="Print raw transcript without reformatting")] = False,
+    lang: Annotated[
+        str, typer.Option("--lang", "-l", help="Preferred language code (default: en)")
+    ] = "en",
+    raw: Annotated[
+        bool, typer.Option("--raw", help="Print raw transcript without reformatting")
+    ] = False,
 ) -> None:
     """Fetch a YouTube transcript and reformat it into readable prose using Claude."""
     try:

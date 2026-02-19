@@ -18,7 +18,9 @@ from n6.llm.skills import load_humanizer
 
 console = Console()
 
-SKILL_FILE = Path(__file__).parent.parent.parent / ".claude" / "skills" / "linkedin-write" / "SKILL.md"
+SKILL_FILE = (
+    Path(__file__).parent.parent.parent / ".claude" / "skills" / "linkedin-write" / "SKILL.md"
+)
 
 
 def _load_skill() -> str:
@@ -30,7 +32,9 @@ def _load_skill() -> str:
 def linkedin_article() -> None:
     """Generate a LinkedIn post from a piped article using Claude Sonnet."""
     if sys.stdin.isatty():
-        console.print("[bold red]Error:[/bold red] No input detected. Pipe your article into this command.")
+        console.print(
+            "[bold red]Error:[/bold red] No input detected. Pipe your article into this command."
+        )
         console.print("  Example: [dim]cat article.md | n6 linkedin-article[/dim]")
         raise typer.Exit(1)
 

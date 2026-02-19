@@ -21,7 +21,9 @@ from n6.llm.skills import load_humanizer
 
 console = Console()
 
-SKILL_FILE = Path(__file__).parent.parent.parent / ".claude" / "skills" / "linkedin-write" / "SKILL.md"
+SKILL_FILE = (
+    Path(__file__).parent.parent.parent / ".claude" / "skills" / "linkedin-write" / "SKILL.md"
+)
 
 
 def _load_skill() -> str:
@@ -31,7 +33,9 @@ def _load_skill() -> str:
 
 
 def linkedin_post(
-    prompt: Annotated[str, typer.Argument(help="The idea, opinion, or topic to write a LinkedIn post about")],
+    prompt: Annotated[
+        str, typer.Argument(help="The idea, opinion, or topic to write a LinkedIn post about")
+    ],
 ) -> None:
     """Write a LinkedIn post from a prompt, opinion, or idea."""
     user_message = prompt

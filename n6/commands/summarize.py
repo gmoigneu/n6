@@ -35,7 +35,9 @@ def _strip_html(text: str) -> str:
 def summarize() -> None:
     """Summarize piped content using GLM."""
     if sys.stdin.isatty():
-        console.print("[bold red]Error:[/bold red] No input detected. Pipe content into this command.")
+        console.print(
+            "[bold red]Error:[/bold red] No input detected. Pipe content into this command."
+        )
         console.print("  Example: [dim]cat file.txt | n6 summarize[/dim]")
         raise typer.Exit(1)
 
