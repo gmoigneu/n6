@@ -5,7 +5,7 @@ Example:
   n6 yt-transcript https://www.youtube.com/watch?v=dQw4w9WgXcQ
   n6 yt-transcript https://youtu.be/dQw4w9WgXcQ
 
-Uses the Claude CLI backend to clean up and reformat the raw transcript.
+Uses the OpenAI backend to clean up and reformat the raw transcript.
 """
 
 from typing import Annotated
@@ -18,7 +18,7 @@ from youtube_transcript_api._errors import (
     VideoUnavailable,
     NoTranscriptFound,
 )
-from n6.llm import claude
+from n6.llm import openai as llm
 from n6.llm.skills import load_humanizer
 
 console = Console()
@@ -26,13 +26,24 @@ err_console = Console(stderr=True)
 
 SYSTEM_PROMPT = """You are given a raw YouTube transcript — a flat stream of automatically timed caption snippets with no punctuation, no paragraph breaks, and occasional transcription errors.
 
-Your job is to reformat it into clean, readable prose:
-- Group related sentences into short paragraphs (3 to 5 sentences each).
+Your job is to produce a clean, readable document in two parts:
+
+PART 1 — KEY TAKEAWAYS
+Write a concise bullet-point summary (5 to 10 bullets) of the most important points. Place this at the very top under the heading "Key Takeaways".
+
+PART 2 — FULL TRANSCRIPT
+Reformat the ENTIRE transcript into clean, readable prose. This is a formatting job, not a summarising job.
+
+CRITICAL RULES — failure to follow these means you have failed the task:
+- Your output for the transcript must be approximately the same length as the input. If your output is significantly shorter, you have summarised instead of reformatted. Do not do this.
+- Keep the speaker's own words and phrasing wherever possible. Do not paraphrase, compress, or rephrase into your own words.
+- Every example, analogy, story, anecdote, aside, tangent, and digression must be included in full, exactly as the speaker told it.
+- Every rhetorical question, repetition for emphasis, and conversational aside must be kept.
+- Group sentences into short paragraphs (3 to 5 sentences) by topic to aid readability.
 - Add proper punctuation and capitalisation.
 - Fix obvious transcription errors (wrong homophones, missing apostrophes, etc.).
-- Remove filler words (um, uh, you know, like) and false starts.
-- Do not summarize. Do not remove content. Preserve the full meaning and all details.
-- Plain text output only. No markdown."""
+- Remove only pure noise: unintelligible stutters and exact duplicate false starts (e.g. "I I I was" → "I was"). Do not remove filler words that carry the speaker's voice or rhythm.
+- Plain text output only. No markdown except for the "Key Takeaways" heading and bullet points."""
 
 
 def _extract_video_id(url: str) -> str:
@@ -65,7 +76,7 @@ def yt_transcript(
         bool, typer.Option("--raw", help="Print raw transcript without reformatting")
     ] = False,
 ) -> None:
-    """Fetch a YouTube transcript and reformat it into readable prose using Claude."""
+    """Fetch a YouTube transcript and reformat it into readable prose using OpenAI."""
     try:
         video_id = _extract_video_id(url)
     except ValueError as e:
@@ -97,11 +108,11 @@ def yt_transcript(
         print(raw_text)
         return
 
-    err_console.print("[dim]Reformatting with Claude...[/dim]")
+    err_console.print("[dim]Reformatting with OpenAI...[/dim]")
     system = SYSTEM_PROMPT + "\n\n---\n\n" + load_humanizer()
 
     try:
-        for chunk in claude.stream(raw_text, system=system):
+        for chunk in llm.stream(raw_text, system=system, model="gpt-5"):
             print(chunk, end="", flush=True)
         print()
     except RuntimeError as e:
